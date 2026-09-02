@@ -127,21 +127,24 @@ if st.button("Order"):
     try:
         with engine.begin() as connection:
             insert_query = text(
-                "INSERT INTO delivery_orders "
-                "(suburb_id, order_text_raw, total_usd, delivery_mode, accessibility_notes) "
-                "VALUES (:suburb_id, :order_text, :total_usd, :delivery_mode, :driver_notes);"
+                """
+                INSERT INTO delivery_orders 
+                (suburb_id, order_text_raw, total_usd, delivery_mode, accessibility_notes) 
+                VALUES 
+                (:suburb_id, :order_text_raw, :total_usd, :delivery_mode, :accessibility_notes);
+                """
             )
             connection.execute(
                 insert_query,
                 {
-                    "suburb_id": suburb_meta["id"],
-                    "order_text": f"Ordered {quantity}x {selected_dish}",
-                    "total_usd": final_total_usd,
-                    "delivery_mode": delivery_mode,
-                    "driver_notes": driver_notes
+                    "suburb_id": int(suburb_meta["id"]),
+                    "order_text_raw": str(f"Ordered {quantity}x {selected_dish}"),
+                    "total_usd": float(final_total_usd),
+                    "delivery_mode": str(delivery_mode),
+                    "accessibility_notes": str(driver_notes)
                 }
             )
         st.success(f"Excellent choice! Your kitchen order has been pushed to the grid to {selected_suburb}.")
         st.balloons()
-    except Exception:
-        st.error("Transaction paused. Let's make sure the database rows match up.")
+    except Exception as e:
+        st.error(f"Database Error details: {e}")
