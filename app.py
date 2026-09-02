@@ -55,8 +55,7 @@ st.write("---")
 
 @st.cache_resource
 def get_db_engine():
-    db_url = st.secrets["SUPABASE_URL"]
-    clean_url = db_url.replace("https://", "postgresql://").split(".co") + ".co:5432/postgres"
+    clean_url = st.secrets["DATABASE_URL"]
     return create_engine(clean_url, pool_size=10, max_overflow=20, pool_recycle=1800)
 
 try:
