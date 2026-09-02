@@ -1,9 +1,55 @@
 import streamlit as st
 from sqlalchemy import create_engine, text
 
-st.set_page_config(page_title="Poto to Plate Storefront", page_icon="🇿🇼", layout="centered")
+st.set_page_config(page_title="Sadza2Go Storefront", page_icon="🍔", layout="centered")
 
-st.title(" Poto to Plate Storefront")
+st.html(
+    """
+    <style>
+        .stApp {
+            background-color: #121212 !important;
+            color: #FFFFFF !important;
+        }
+        h1, h2, h3, .stSubheader {
+            color: #FF6B00 !important;
+            font-family: 'Arial Rounded MT Bold', sans-serif !important;
+        }
+        div[data-testid="stMetricValue"] {
+            color: #FF6B00 !important;
+            font-size: 2rem !important;
+            font-weight: bold !important;
+        }
+        div[data-testid="stMetricLabel"] {
+            color: #AAAAAA !important;
+        }
+        .stButton > button {
+            background-color: #FF6B00 !important;
+            color: white !important;
+            border-radius: 20px !important;
+            border: none !important;
+            padding: 0.5rem 2rem !important;
+            font-weight: bold !important;
+            font-size: 1.1rem !important;
+            width: 100% !important;
+            box-shadow: 0px 4px 10px rgba(255, 107, 0, 0.3) !important;
+        }
+        .stButton > button:hover {
+            background-color: #E05E00 !important;
+            color: white !important;
+        }
+        div[data-testid="stFormSubmitButton"] > button {
+            background-color: #FF6B00 !important;
+        }
+        .stSelectbox, .stNumberInput, .stTextArea, div[role="radiogroup"] {
+            background-color: #1E1E1E !important;
+            border-radius: 10px !important;
+            color: white !important;
+        }
+    </style>
+    """
+)
+
+st.title("Sadza2Go 🍔")
 st.subheader("Authentic Flavors, Delivered Inclusively")
 st.write("---")
 
@@ -26,10 +72,10 @@ st.write("---")
 st.markdown("### Browse Our Fresh Local Menu")
 
 menu_items = {
-    "Sadza with Flame-Grilled T-Bone Beef": {"price_usd": 6.50, "emoji": ""},
-    "Traditional Pod Pod Chicken Stew": {"price_usd": 5.50, "emoji": ""},
-    "Fresh Tilapia Bream with Greens": {"price_usd": 7.00, "emoji": ""},
-    "Chilled Mazoe Orange Juice Jug": {"price_usd": 2.50, "emoji": ""}
+    "Sadza with Flame-Grilled T-Bone Beef": {"price_usd": 6.50, "emoji": "🥩"},
+    "Traditional Pod Pod Chicken Stew": {"price_usd": 5.50, "emoji": "🍗"},
+    "Fresh Tilapia Bream with Greens": {"price_usd": 7.00, "emoji": "🐟"},
+    "Chilled Mazoe Orange Juice Jug": {"price_usd": 2.50, "emoji": "🍹"}
 }
 
 col1, col2 = st.columns(2)
@@ -42,7 +88,7 @@ item_meta = menu_items[selected_dish]
 items_subtotal_usd = item_meta["price_usd"] * quantity
 
 st.write("---")
-st.markdown("### 📍 Delivery & Accessibility Configuration")
+st.markdown("###  Delivery & Accessibility Configuration")
 
 suburb_options = {
     "Avondale": {"id": 1, "is_low_density": True},
@@ -57,7 +103,7 @@ suburb_meta = suburb_options[selected_suburb]
 delivery_mode = st.radio("Select Delivery Mode:", ["Solo Delivery", "Pooled Delivery (Share routes to save cash)"])
 
 needs_assistance = st.checkbox("♿ I require driver assistance upon arrival")
-driver_notes = st.text_area("Provide special driver instructions (e.g., knock loudly, use voice calls):") if needs_assistance else "Standard drop-off."
+driver_notes = st.text_area("Provide special driver instructions:") if needs_assistance else "Standard drop-off."
 
 base_delivery_usd = 3.00 if suburb_meta["is_low_density"] else 6.00
 if delivery_mode == "Pooled Delivery (Share routes to save cash)":
@@ -67,7 +113,7 @@ final_total_usd = items_subtotal_usd + base_delivery_usd
 final_total_zig = final_total_usd * zig_rate
 
 st.write("---")
-st.markdown("###  Your Order Receipt Summary")
+st.markdown("### Your Order Receipt Summary")
 
 summary_col1, summary_col2 = st.columns(2)
 with summary_col1:
@@ -78,7 +124,7 @@ with summary_col2:
     st.metric(label="Total Balance (ZiG)", value=f"{final_total_zig:,.2f} ZiG")
 
 st.write("---")
-if st.button("🚀 Confirm & Place Food Order"):
+if st.button("Order"):
     try:
         with engine.begin() as connection:
             insert_query = text(
@@ -98,5 +144,5 @@ if st.button("🚀 Confirm & Place Food Order"):
             )
         st.success(f"Excellent choice! Your kitchen order has been pushed to the grid to {selected_suburb}.")
         st.balloons()
-    except Exception as runtime_error:
+    except Exception:
         st.error("Transaction paused. Let's make sure the database rows match up.")
