@@ -53,17 +53,13 @@ st.title("Sadza2Go 🍔")
 st.subheader("Authentic Flavors, Delivered Inclusively")
 st.write("---")
 
-@st.cache_resource
-def get_db_engine():
-    direct_pooler_url = "postgresql+psycopg2://postgres.zzpytdsjwufgcxyqiqtv:Runyararo2003@://supabase.com"
-    return create_engine(direct_pooler_url, pool_size=10, max_overflow=20, pool_recycle=1800)
+direct_pooler_url = "postgresql+psycopg2://postgres.zzpytdsjwufgcxyqiqtv:Runyararo2003@://supabase.com"
 
 try:
-    engine = get_db_engine()
+    engine = create_engine(direct_pooler_url, pool_size=10, max_overflow=20, pool_recycle=1800)
 except Exception as e:
     st.error(f"Database layer connection failed: {e}")
     st.stop()
-
 
 st.markdown("### Today's Currency Exchange Rate")
 zig_rate = st.number_input("Current USD to ZiG Market Rate:", value=25.00, step=0.10)
@@ -121,7 +117,7 @@ with summary_col1:
     st.markdown(f"**Delivery Destination:** {selected_suburb} ({delivery_mode})")
 with summary_col2:
     st.metric(label="Total Balance (USD)", value=f"${final_total_usd:,.2f}")
-    st.metric(label="Total Balance (ZiG)", value=f"{final_total_zig:,.2f} ZiG")
+    st.metric(label="Total Balance (ZiG)", value=f"{final_total_zig:,.2f} WiG")
 
 st.write("---")
 if st.button("Order"):
