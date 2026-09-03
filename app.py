@@ -56,12 +56,14 @@ st.write("---")
 @st.cache_resource
 def get_db_engine():
     clean_url = st.secrets["DATABASE_URL"]
+    if clean_url.startswith("postgresql://"):
+        clean_url = clean_url.replace("postgresql://", "postgresql+psycopg2://", 1)
     return create_engine(clean_url, pool_size=10, max_overflow=20, pool_recycle=1800)
 
 try:
     engine = get_db_engine()
-except Exception:
-    st.error("Database layer connection failed.")
+except Exception as e:
+    st.error(f"Database layer connection failed: {e}")
     st.stop()
 
 st.markdown("### Today's Currency Exchange Rate")
