@@ -55,7 +55,9 @@ st.write("---")
 
 @st.cache_resource
 def get_db_engine():
-    clean_url = st.secrets["DATABASE_URL"]
+    clean_url = st.secrets.get("DATABASE_URL", "")
+    if not clean_url or clean_url.strip() == "":
+        raise ValueError("DATABASE_URL is currently empty inside Streamlit secrets.")
     if clean_url.startswith("postgresql://"):
         clean_url = clean_url.replace("postgresql://", "postgresql+psycopg2://", 1)
     return create_engine(clean_url, pool_size=10, max_overflow=20, pool_recycle=1800)
