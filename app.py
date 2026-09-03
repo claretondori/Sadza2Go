@@ -55,18 +55,15 @@ st.write("---")
 
 @st.cache_resource
 def get_db_engine():
-    clean_url = st.secrets.get("DATABASE_URL", "")
-    if not clean_url or clean_url.strip() == "":
-        raise ValueError("DATABASE_URL is currently empty inside Streamlit secrets.")
-    if clean_url.startswith("postgresql://"):
-        clean_url = clean_url.replace("postgresql://", "postgresql+psycopg2://", 1)
-    return create_engine(clean_url, pool_size=10, max_overflow=20, pool_recycle=1800)
+    direct_pooler_url = "postgresql+psycopg2://postgres.zzpytdsjwufgcxyqiqtv:Runyararo2003@://supabase.com"
+    return create_engine(direct_pooler_url, pool_size=10, max_overflow=20, pool_recycle=1800)
 
 try:
     engine = get_db_engine()
 except Exception as e:
     st.error(f"Database layer connection failed: {e}")
     st.stop()
+
 
 st.markdown("### Today's Currency Exchange Rate")
 zig_rate = st.number_input("Current USD to ZiG Market Rate:", value=25.00, step=0.10)
